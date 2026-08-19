@@ -29,8 +29,11 @@ public:
     void SetValue(const size_t&, const size_t&) override;
     void SetValue(const Rect&) override;
     
-    size_t GetX() override;
-    size_t GetY() override;
+    size_t GetX() const override;
+    size_t GetY() const override;
+    
+    bool operator== (const Rect&) const override;
+    bool operator!= (const Rect&) const override;
 };
 
 
