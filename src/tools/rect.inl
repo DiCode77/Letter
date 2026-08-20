@@ -1,13 +1,13 @@
 #include <rect.hpp>
 
 template <typename Templ>
-Rect<Templ>::Rect(const size_t &x, const size_t &y) : stg(x, y){}
+Rect<Templ>::Rect(const lett::val_t &x, const lett::val_t &y) : stg(x, y){}
 
 template <typename Templ>
 Rect<Templ>::Rect(const Templ &lobj) : Rect<Templ>::Rect(lobj.stg.x, lobj.stg.y){}
 
 template <typename Templ>
-void Rect<Templ>::SetValue(const size_t &x, const size_t &y){
+void Rect<Templ>::SetValue(const lett::val_t &x, const lett::val_t &y){
     this->stg = {x, y};
 }
 
@@ -17,12 +17,12 @@ void Rect<Templ>::SetValue(const Rect &val){
 }
 
 template <typename Templ>
-size_t Rect<Templ>::GetX() const{
+lett::val_t Rect<Templ>::GetX() const{
     return this->stg.x;
 }
 
 template <typename Templ>
-size_t Rect<Templ>::GetY() const{
+lett::val_t Rect<Templ>::GetY() const{
     return this->stg.y;
 }
 
@@ -44,4 +44,22 @@ Rect<Templ>::Rect Rect<Templ>::operator+ (const Rect &obj){
 template <typename Templ>
 Rect<Templ>::Rect Rect<Templ>::operator- (const Rect &obj){
     return {this->stg.x - obj.stg.x, this->stg.y - obj.stg.y};
+}
+
+template <typename Templ>
+Rect<Templ>::Rect &Rect<Templ>::operator= (const Rect &obj){
+    this->stg = obj.stg;
+    return *this;
+}
+
+template <typename Templ>
+Rect<Templ>::Rect &Rect<Templ>::operator+= (const Rect &obj){
+    this->stg = { this->stg.x + obj.stg.x, this->stg.y + obj.stg.y };
+    return *this;
+}
+
+template <typename Templ>
+Rect<Templ>::Rect &Rect<Templ>::operator-= (const Rect &obj){
+    this->stg = { this->stg.x - obj.stg.x, this->stg.y - obj.stg.y };
+    return *this;
 }
