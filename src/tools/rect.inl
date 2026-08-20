@@ -35,3 +35,13 @@ template <typename Templ>
 bool Rect<Templ>::operator!= (const Rect<Templ> &obj) const{
     return this->stg.x != obj.stg.x || this->stg.y != obj.stg.y;
 }
+
+template <typename Templ>
+Rect<Templ>::Rect Rect<Templ>::operator+ (const Rect &obj){
+    return {this->stg.x + obj.stg.x, this->stg.y + obj.stg.y};
+}
+
+template <typename Templ>
+Rect<Templ>::Rect Rect<Templ>::operator- (const Rect &obj){
+    return {this->stg.x - obj.stg.x, this->stg.y - obj.stg.y};
+}

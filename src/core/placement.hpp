@@ -20,6 +20,9 @@ public:
     
     virtual bool operator== (const Te&) const = 0;
     virtual bool operator!= (const Te&) const = 0;
+    
+    virtual Te operator+ (const Te&) = 0;
+    virtual Te operator- (const Te&) = 0;
 };
 }
 

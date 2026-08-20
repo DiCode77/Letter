@@ -34,6 +34,9 @@ public:
     
     bool operator== (const Rect&) const override;
     bool operator!= (const Rect&) const override;
+    
+    Rect operator+ (const Rect&) override;
+    Rect operator- (const Rect&) override;
 };
 
 
