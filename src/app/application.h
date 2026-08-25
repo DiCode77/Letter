@@ -8,4 +8,6 @@
 #ifndef application_h
 #define application_h
 
+#include <Cocoa/Cocoa.h>
+
 #endif
