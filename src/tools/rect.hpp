@@ -44,6 +44,8 @@ public:
     Rect &operator-= (const Rect&) override;
 };
 
+const Rect<point> default_point = {-1, -1};
+const Rect<size>  default_size  = {-1, -1};
 
 #include <rect.inl>
 }
