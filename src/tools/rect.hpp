@@ -10,13 +10,14 @@
 
 #include <settings.hpp>
 #include <placement.hpp>
+#include <concepts>
 
 namespace lett{
 
 class  point;
 class  size;
 
-template <typename Templ>
+template <typename Templ> requires (std::same_as<Templ, point> || std::same_as<Templ, size>)
 class Rect : public lett::RectPlacement<Rect<Templ>>{
     struct Strorage{
         lett::val_t x = 0;
