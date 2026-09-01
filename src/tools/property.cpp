@@ -1,4 +1,5 @@
 #include <property.hpp>
+#include <window.h>
 
 lett::Property<lett::window> &lett::Property<lett::window>::parent(DataSet *parent){
     this->m_parent = parent;
