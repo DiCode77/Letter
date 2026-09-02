@@ -63,4 +63,18 @@ bool lett::Add<lett::view>::IsCreate(const lett::Property<view> &prop){
     return false;
 }
 
-lett::Add<lett::view> *lett::Add<lett::view>::Show(){}
+lett::Add<lett::view> *lett::Add<lett::view>::Show(){
+    return this;
+}
+
+lett::Add<lett::view> *lett::Add<lett::view>::Hide(){
+    return this;
+}
+
+lett::Add<lett::view> *lett::Add<lett::view>::Close(){
+    return this;
+}
+
+lett::Add<lett::view> *lett::Add<lett::view>::Destroy(){
+    return this;
+}

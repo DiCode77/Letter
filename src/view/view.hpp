@@ -31,6 +31,9 @@ public:
     Add(const lett::Property<view>&);
     bool IsCreate(const lett::Property<view>&) override;
     Add *Show() override;
+    Add *Hide() override;
+    Add *Close() override;
+    Add *Destroy() override;
 };
 
 };
