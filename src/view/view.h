@@ -14,17 +14,11 @@ namespace lett{
 class ViewBridge{
     NSView *m_ns_view;
 public:
-    ViewBridge() : m_ns_view(nil){}
+    ~ViewBridge();
+    ViewBridge();
     
-    void SetNSView(NSView *view){
-        if (this->m_ns_view == nil){
-            this->m_ns_view = view;
-        }
-    }
-    
-    NSView *GetNSView(){
-        return this->m_ns_view;
-    }
+    void SetView(NSView*);
+    NSView *GetView();
 };
 }
 

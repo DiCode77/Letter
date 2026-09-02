@@ -14,21 +14,18 @@
 namespace lett{
 class DataSet{
 public:
-    using DataPair = std::pair<DataSet*, std::function<bool()>>;
+    using DataPair = std::function<bool()>;
 private:
-    void      *m_object   = nullptr; // ?
     void      *m_view     = nullptr;
     DataSet   *m_parent   = nullptr;
     std::deque<DataPair> m_children;
 public:
     DataSet() = default;
     
-    void SetObject(void*);
     void SetView(void*);
     void SetParent(DataSet*);
     void SetChildren(DataPair &&);
     
-    void *GetObject();
     void *GetView();
     DataSet *GetParent();
     std::deque<DataPair> &GetChildren();

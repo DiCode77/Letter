@@ -11,6 +11,8 @@
 #include <property.hpp>
 #include <element.hpp>
 #include <stdexcept>
+#include <ranges>
+#include <algorithm>
 
 namespace lett{
 
@@ -25,6 +27,7 @@ class Add <view> : public Element<Add<view>, view>{
     ViewBridge *m_view;
 public:
     ~Add() override;
+    Add() = delete;
     Add(const lett::Property<view>&);
     bool IsCreate(const lett::Property<view>&) override;
     Add *Show() override;

@@ -1,12 +1,30 @@
 #include <window.hpp>
 #include <window.h>
 
+lett::WindowBridge::~WindowBridge(){
+    if (this->m_ns_window != nil){
+        [this->m_ns_window release];
+        this->m_ns_window = nil;
+    }
+}
+
+lett::WindowBridge::WindowBridge() : m_ns_window(nil){}
+
+void lett::WindowBridge::SetWindow(NSWindow *window){
+    if (this->m_ns_window == nil){
+        this->m_ns_window = window;
+    }
+}
+
+NSWindow *lett::WindowBridge::GetWindow(){
+    return this->m_ns_window;
+}
+
 lett::Create<lett::window>::~Create(){
-    std::ranges::for_each(this->GetChildren().begin(), this->GetChildren().end(), [](lett::DataSet::DataPair &p){
-        p.second();
+    std::ranges::for_each(this->GetChildren().begin(), this->GetChildren().end(), [](lett::DataSet::DataPair &func){
+        func();
     });
     this->GetChildren().clear();
-    
     delete this->m_window_bridge;
 }
 
@@ -29,13 +47,11 @@ bool lett::Create<lett::window>::IsCreate(const lett::Property<lett::window> &pr
         [window makeKeyAndOrderFront:nil];
         
         this->SetView(reinterpret_cast<void*>(window.contentView));
-     //   this->SetObject(reinterpret_cast<void*>(window)); // ?
-        
         this->m_window_bridge->SetWindow(window);
         
         if (prop.GetParent() != nullptr){
             this->SetParent(prop.GetParent());
-            this->GetParent()->SetChildren({this, [this](){
+            this->GetParent()->SetChildren({[this](){
                 delete this;
                 return true;
             }});

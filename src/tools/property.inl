@@ -36,6 +36,12 @@ lett::Property<T> &lett::Property<T>::style(int style){
 }
 
 template <typename T>
+lett::Property<T> &lett::Property<T>::auto_resize(bool is_bool){
+    this->m_auto_resize = is_bool;
+    return *this;
+}
+
+template <typename T>
 lett::DataSet *lett::Property<T>::GetParent() const{
     return this->m_parent;
 }
@@ -58,4 +64,9 @@ lett::Rect<lett::size> lett::Property<T>::GetSize() const{
 template <typename T>
 int lett::Property<T>::GetStyle() const{
     return this->m_style;
+}
+
+template <typename T>
+bool lett::Property<T>::GetAutoResize() const{
+    return this->m_auto_resize;
 }

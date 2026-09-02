@@ -14,17 +14,11 @@ namespace lett{
 class WindowBridge{
     NSWindow *m_ns_window;
 public:
-    WindowBridge() : m_ns_window(nil){}
+    ~WindowBridge();
+    WindowBridge();
     
-    void SetWindow(NSWindow *window){
-        if (this->m_ns_window == nil){
-            this->m_ns_window = window;
-        }
-    }
-    
-    NSWindow *GetWindow(){
-        return this->m_ns_window;
-    }
+    void SetWindow(NSWindow*);
+    NSWindow *GetWindow();
 };
 }
 

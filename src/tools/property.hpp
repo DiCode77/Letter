@@ -22,18 +22,21 @@ class Property{
     lett::Rect<lett::point> m_point  = lett::default_point;
     lett::Rect<lett::size>  m_size   = lett::default_size;
     int                     m_style  = 0; // ?
+    bool                    m_auto_resize = true;
 public:
     Property &parent(DataSet*);
     Property &title(const std::string_view&);
     Property &point(const lett::Rect<lett::point>&);
     Property &size(const lett::Rect<lett::size>&);
     Property &style(int);
+    Property &auto_resize(bool);
     
     DataSet *GetParent() const;
     std::string_view GetTitle() const;
     lett::Rect<lett::point> GetPoint() const;
     lett::Rect<lett::size> GetSize() const;
     int GetStyle() const;
+    bool GetAutoResize() const;
 };
 
 #include <property.inl>
