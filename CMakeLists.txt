@@ -16,8 +16,8 @@ set(LIB_NAME "${PROJECT_NAME}")
 
 file(GLOB_RECURSE SRC_APPL_FILES    "${SRC_APPL}/*.hpp" "${SRC_APPL}/*.h" "${SRC_APPL}/*.mm")
 file(GLOB_RECURSE SRC_CORE_FILES    "${SRC_CORE}/*.hpp" "${SRC_CORE}/*.h")
-file(GLOB_RECURSE SRC_VIEW_FILES    "${SRC_VIEW}/*.hpp" "${SRC_VIEW}/*.h" "${SRC_VIEW}/*.cpp" "${SRC_VIEW}/*.mm")
-file(GLOB_RECURSE SRC_TOOLS_FILES   "${SRC_TOOLS}/*.hpp" "${SRC_TOOLS}/*.cpp" "${SRC_TOOLS}/*.inl")
+file(GLOB_RECURSE SRC_VIEW_FILES    "${SRC_VIEW}/*.hpp" "${SRC_VIEW}/*.h" "${SRC_VIEW}/*.mm")
+file(GLOB_RECURSE SRC_TOOLS_FILES   "${SRC_TOOLS}/*.hpp" "${SRC_TOOLS}/*.cpp" "${SRC_TOOLS}/*.inl" "${SRC_TOOLS}/*.mm")
 file(GLOB_RECURSE SRC_WINDOW_FILES  "${SRC_WINDOW}/*.hpp" "${SRC_WINDOW}/*.h" "${SRC_WINDOW}/*.cpp" "${SRC_WINDOW}/*.mm")
 
 find_library(APPKIT_FRAMEWORK AppKit REQUIRED)

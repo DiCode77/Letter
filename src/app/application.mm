@@ -6,15 +6,15 @@ lett::App::App(){
     this->m_app = reinterpret_cast<NSApplication*>([NSApplication sharedApplication]);
 }
 
-void lett::App::run(){
+void lett::App::Run(){
     [reinterpret_cast<NSApplication*>(this->m_app) run];
 }
 
-void lett::App::terminate(){
+void lett::App::Terminate(){
     [reinterpret_cast<NSApplication*>(this->m_app) terminate:nil];
 }
 
-void lett::App::stop(){
+void lett::App::Stop(){
     [reinterpret_cast<NSApplication*>(this->m_app) stop:nil];
 }
 

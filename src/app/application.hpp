@@ -15,9 +15,9 @@ public:
     ~App();
     App();
     App(const App&) = delete;
-    void run();
-    void terminate();
-    void stop();
+    void Run();
+    void Terminate();
+    void Stop();
     void *GetApp();
 };
 };

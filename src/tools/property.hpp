@@ -16,12 +16,7 @@
 namespace lett{
 
 template <typename>
-class Property;
-
-class window;
-
-template <>
-class Property<window>{
+class Property{
     DataSet                 *m_parent = nullptr;
     std::string_view        m_title;
     lett::Rect<lett::point> m_point  = lett::default_point;
@@ -41,6 +36,7 @@ public:
     int GetStyle() const;
 };
 
+#include <property.inl>
 }
 
 #endif

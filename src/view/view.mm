@@ -14,19 +14,19 @@ bool lett::Add<lett::view>::IsCreate(const lett::Property<view> &prop){
         
         NSView *p_view = (NSView*)prop.GetParent()->GetView();
         if (p_view != nil){
-            this->m_view->SetNSView([[NSView alloc] initWithFrame:NSMakeRect(50, 50, 300, 200)]);
-            this->m_view->GetNSView().wantsLayer = YES;
-            this->m_view->GetNSView().layer.backgroundColor = [[NSColor systemBlueColor] CGColor];
+            NSView *new_view = [[NSView alloc] initWithFrame:p_view.bounds];
+            new_view.wantsLayer = YES;
             
-            this->SetView(reinterpret_cast<void*>(this->m_view->GetNSView()));
-            
+            this->m_view->SetNSView(new_view);
+            this->SetView(reinterpret_cast<void*>(new_view));
+
             this->SetParent(prop.GetParent());
             this->GetParent()->SetChildren({this, [this]() -> bool{
                 delete this;
                 return this;
             }});
             
-            [p_view addSubview:this->m_view->GetNSView()];
+            [p_view addSubview:new_view];
         }else{
             throw std::runtime_error("No view!");
         }

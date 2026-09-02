@@ -11,3 +11,6 @@ The project is still in the early stages of development; its architecture is sti
 For now, the organizational chart looks like this.
 
 <img src="other/img/diagram_1.jpg" alt="LEtter" width="800"/>
+
+
+For now, I'm focused on implementing a self-referential template - CRTP-like construct
