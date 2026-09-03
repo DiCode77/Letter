@@ -6,6 +6,12 @@
 //
 
 template <typename T>
+lett::Property<T> &lett::Property<T>::app(lett::App *app){
+    this->m_app = app;
+    return *this;
+}
+
+template <typename T>
 lett::Property<T> &lett::Property<T>::parent(DataSet *parent){
     this->m_parent = parent;
     return *this;
@@ -39,6 +45,11 @@ template <typename T>
 lett::Property<T> &lett::Property<T>::auto_resize(bool is_bool){
     this->m_auto_resize = is_bool;
     return *this;
+}
+
+template <typename T>
+lett::App *lett::Property<T>::GetApp() const{
+    return this->m_app;
 }
 
 template <typename T>

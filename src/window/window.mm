@@ -13,9 +13,40 @@
     return self;
 }
 
+// The delegation method is triggered when the red navigation button is pressed.
 - (BOOL)windowShouldClose:(NSWindow *)sender{
     return true;
 }
+
+- (void)windowWillClose:(NSNotification *)notification{
+    if (auto p = self.m_oem_window->GetAppLifeSpan(); p != nullptr){
+        p->Stop();
+    }
+}
+
+- (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame{
+    return true;
+}
+
+- (NSRect)windowWillUseStandardFrame:(NSWindow *)window defaultFrame:(NSRect)newFrame{
+    return newFrame;
+}
+
+// The delegation method is triggered when the yellow navigation button is pressed. #1
+- (void)windowWillMiniaturize:(NSNotification *)notification{}
+
+// The delegation method is triggered when the yellow button is pressed and the hiding process is complete. #2
+- (void)windowDidMiniaturize:(NSNotification *)notification{}
+
+// The delegate method is triggered when the yellow button is clicked and the window is expanded. #3
+- (void)windowDidDeminiaturize:(NSNotification *)notification{}
+
+// The delegation method is triggered when the red button is pressed. #1
+- (void)windowDidResize:(NSNotification *)notification{}
+
+// The delegation method is triggered when the red button is pressed. #2
+- (void)windowDidEndLiveResize:(NSNotification *)notification{}
+
 @end
 
 lett::WindowBridge::~WindowBridge(){
@@ -54,7 +85,7 @@ lett::Create<lett::window>::~Create(){
     delete this->m_window_bridge;
 }
 
-lett::Create<lett::window>::Create(const lett::Property<lett::window> &prop){
+lett::Create<lett::window>::Create(const lett::Property<lett::window> &prop) : m_window_bridge(nullptr), m_app(prop.GetApp()){
     if (!this->IsCreate(prop)){
         return;
     }
@@ -107,4 +138,8 @@ lett::Create<lett::window> *lett::Create<lett::window>::Close(){
 
 lett::Create<lett::window> *lett::Create<lett::window>::Destroy(){
     return this;
+}
+
+lett::App *lett::Create<lett::window>::GetAppLifeSpan(){
+    return this->m_app;
 }
