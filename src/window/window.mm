@@ -13,6 +13,10 @@
     return self;
 }
 
+- (void)dealloc{
+    [super dealloc];
+}
+
 // The delegation method is triggered when the red navigation button is pressed.
 - (BOOL)windowShouldClose:(NSWindow *)sender{
     return true;
@@ -51,11 +55,14 @@
 
 lett::WindowBridge::~WindowBridge(){
     if (this->m_ns_window != nil){
+        [this->m_ns_window close];
+        [this->m_ns_window setDelegate:nil];
+        
         if (this->m_interface != nil){
-            [this->m_ns_window setDelegate:nil];
             [this->m_interface release];
             this->m_interface = nil;
         }
+
         [this->m_ns_window release];
         this->m_ns_window = nil;
     }
