@@ -8,8 +8,8 @@ void lett::DataSet::SetParent(lett::DataSet *parent){
     this->m_parent = parent;
 }
 
-void lett::DataSet::SetChildren(DataPair &&r_ch){
-    this->m_children.emplace_back(std::move(r_ch));
+void lett::DataSet::SetChildren(void *obj, DataPair &&r_ch){
+    this->m_children.insert(std::make_pair(obj, std::move(r_ch)));
 }
 
 void *lett::DataSet::GetView(){
@@ -20,6 +20,6 @@ lett::DataSet *lett::DataSet::GetParent(){
     return this->m_parent;
 }
 
-std::deque<lett::DataSet::DataPair> &lett::DataSet::GetChildren(){
+std::unordered_map<void*, lett::DataSet::DataPair> &lett::DataSet::GetChildren(){
     return this->m_children;
 }

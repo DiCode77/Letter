@@ -8,7 +8,7 @@
 #ifndef dataset_hpp
 #define dataset_hpp
 
-#include <deque>
+#include <unordered_map>
 #include <functional>
 
 namespace lett{
@@ -18,17 +18,18 @@ public:
 private:
     void      *m_view     = nullptr;
     DataSet   *m_parent   = nullptr;
-    std::deque<DataPair> m_children;
+    std::unordered_map<void*, DataPair> m_children;
 public:
     DataSet() = default;
     
     void SetView(void*);
     void SetParent(DataSet*);
-    void SetChildren(DataPair &&);
+    void SetChildren(void*, DataPair &&);
     
+    void *GetObject();
     void *GetView();
     DataSet *GetParent();
-    std::deque<DataPair> &GetChildren();
+    std::unordered_map<void*, DataPair> &GetChildren();
 };
 }
 
