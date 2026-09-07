@@ -9,8 +9,11 @@
 #define application_hpp
 
 namespace lett {
+
+class AppBridge;
+
 class App{
-    void *m_app;
+    AppBridge *m_app_bridge;
 public:
     ~App();
     App();

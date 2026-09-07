@@ -1,23 +1,27 @@
 #include <application.hpp>
 #include <application.h>
 
+@implementation AppInterface
+@end
+
 lett::App::~App(){}
-lett::App::App(){
-    this->m_app = reinterpret_cast<NSApplication*>([NSApplication sharedApplication]);
+
+lett::App::App() : m_app_bridge(new AppBridge(this)){
+    this->m_app_bridge->SetApp([NSApplication sharedApplication]);
 }
 
 void lett::App::Run(){
-    [reinterpret_cast<NSApplication*>(this->m_app) run];
+    [this->m_app_bridge->GetApp() run];
 }
 
 void lett::App::Terminate(){
-    [reinterpret_cast<NSApplication*>(this->m_app) terminate:nil];
+    [NSApp terminate:nil];
 }
 
 void lett::App::Stop(){
-    [reinterpret_cast<NSApplication*>(this->m_app) stop:nil];
+    [this->m_app_bridge->GetApp() stop:nil];
 }
 
 void *lett::App::GetApp(){
-    return this->m_app;
+   return reinterpret_cast<void*>(this->m_app_bridge->GetApp());
 }
