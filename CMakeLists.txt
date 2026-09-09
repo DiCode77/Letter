@@ -10,6 +10,7 @@ set(SRC_VIEW   "${SRC}/view")
 set(SRC_TOOLS  "${SRC}/tools")
 set(SRC_WINDOW "${SRC}/window")
 set(SRC_EVENT  "${SRC}/event")
+set(SRC_OBJID  "${SRC}/objid")
 
 set(LIB_NAME "${PROJECT_NAME}")
 
@@ -21,15 +22,16 @@ file(GLOB_RECURSE SRC_VIEW_FILES    "${SRC_VIEW}/*.hpp" "${SRC_VIEW}/*.h" "${SRC
 file(GLOB_RECURSE SRC_TOOLS_FILES   "${SRC_TOOLS}/*.hpp" "${SRC_TOOLS}/*.cpp" "${SRC_TOOLS}/*.inl" "${SRC_TOOLS}/*.mm")
 file(GLOB_RECURSE SRC_WINDOW_FILES  "${SRC_WINDOW}/*.hpp" "${SRC_WINDOW}/*.h" "${SRC_WINDOW}/*.cpp" "${SRC_WINDOW}/*.mm")
 file(GLOB_RECURSE SRC_EVENT_FILES   "${SRC_EVENT}/*.hpp" "${SRC_EVENT}/*.h" "${SRC_EVENT}/*.cpp" "${SRC_EVENT}/*.mm")
+file(GLOB_RECURSE SRC_OBJID_FILES   "${SRC_OBJID}/*.hpp" "${SRC_OBJID}/*.cpp")
 
 find_library(APPKIT_FRAMEWORK AppKit REQUIRED)
 find_library(MAPKIT_FRAMEWORK MapKit REQUIRED)
 find_library(CORE_LOCATION_FRAMEWORK CoreLocation REQUIRED)
 find_library(FOUNDATION_FRAMEWORK Foundation REQUIRED)
 
-add_library(${LIB_NAME} SHARED ${SRC_APPL_FILES} ${SRC_CORE_FILES} ${SRC_VIEW_FILES} ${SRC_TOOLS_FILES} ${SRC_WINDOW_FILES} ${SRC_EVENT_FILES})
+add_library(${LIB_NAME} SHARED ${SRC_APPL_FILES} ${SRC_CORE_FILES} ${SRC_VIEW_FILES} ${SRC_TOOLS_FILES} ${SRC_WINDOW_FILES} ${SRC_EVENT_FILES} ${SRC_OBJID_FILES})
 
-target_include_directories(${LIB_NAME} PUBLIC ${SRC_APPL} ${SRC_CORE} ${SRC_VIEW} ${SRC_TOOLS} ${SRC_WINDOW} ${SRC_EVENT})
+target_include_directories(${LIB_NAME} PUBLIC ${SRC_APPL} ${SRC_CORE} ${SRC_VIEW} ${SRC_TOOLS} ${SRC_WINDOW} ${SRC_EVENT} ${SRC_OBJID})
 
 target_link_libraries(${LIB_NAME} PUBLIC
                                         ${APPKIT_FRAMEWORK} 
@@ -52,6 +54,7 @@ source_group("src\\view"   FILES ${SRC_VIEW_FILES})
 source_group("src\\tools"  FILES ${SRC_TOOLS_FILES})
 source_group("src\\window" FILES ${SRC_WINDOW_FILES})
 source_group("src\\event"  FILES ${SRC_EVENT_FILES})
+source_group("src\\objid"  FILES ${SRC_OBJID_FILES})
 
 # // Executable
 
@@ -65,7 +68,7 @@ set_target_properties(${APP_NAME} PROPERTIES
                                             CXX_STANDARD 23 
                                             CXX_STANDARD_REQUIRED ON )  
 
-target_include_directories(${APP_NAME} PRIVATE ${SRC_APPL} ${SRC_CORE} ${SRC_VIEW} ${SRC_TOOLS} ${SRC_WINDOW} ${SRC_EVENT})
+target_include_directories(${APP_NAME} PRIVATE ${SRC_APPL} ${SRC_CORE} ${SRC_VIEW} ${SRC_TOOLS} ${SRC_WINDOW} ${SRC_EVENT} ${SRC_OBJID})
 
 source_group("examples\\window" FILES ${EXAMPLES}/window/main.cpp)
 
