@@ -10,7 +10,12 @@
 
 #include <Cocoa/Cocoa.h>
 
-@interface AppInterface : NSObject <NSWindowDelegate>
+namespace lett{
+class App;
+}
+
+@interface AppInterface : NSObject <NSApplicationDelegate>
+@property (nonatomic, assign) lett::App *m_oem_app;
 @end
 
 #endif

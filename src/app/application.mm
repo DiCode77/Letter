@@ -2,6 +2,29 @@
 #include <application.h>
 
 @implementation AppInterface
+
+- (instancetype)init{
+    self = [super init];
+    
+    if (self){
+        _m_oem_app = nil;
+    }
+    
+    return self;
+}
+
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender{
+    if (self.m_oem_app->GetWindowQuantity() > 0){
+        return NSTerminateCancel;
+    }
+    
+    return NSTerminateNow;
+}
+
+- (void)applicationWillTerminate:(NSNotification *)notification{
+    delete self.m_oem_app;
+}
+
 @end
 
 void lett::AppStorage::AddFunc(void *is_id, Func func){
@@ -28,26 +51,43 @@ bool lett::AppStorage::RemoveFunc(void *is_id){
     return false;
 }
 
-lett::App::~App(){}
-
-lett::App::App() : m_app_bridge(new AppBridge(this)){
-    this->m_app_bridge->SetApp([NSApplication sharedApplication]);
+lett::App::~App(){
+    delete this->m_app_bridge;
 }
+
+lett::App::App() : m_app_bridge(new AppBridge(this)){}
 
 void lett::App::Run(){
     [this->m_app_bridge->GetApp() run];
 }
 
 void lett::App::Terminate(){
-    [NSApp terminate:nil];
+    [this->m_app_bridge->GetApp() terminate:nil];
 }
 
 void lett::App::Stop(){
     [this->m_app_bridge->GetApp() stop:nil];
 }
 
+void lett::App::Finish(){
+    
+}
+
 void *lett::App::GetApp(){
    return reinterpret_cast<void*>(this->m_app_bridge->GetApp());
+}
+
+long lett::App::GetWindowQuantity(){
+    return this->m_window_quantity;
+}
+
+void lett::App::IncreaseQuantity(){
+    this->m_window_quantity++;
+}
+
+void lett::App::DecreaseQuantity(){
+    if (this->m_window_quantity > 0)
+        this->m_window_quantity--;
 }
 
 lett::AppStorage &lett::App::GetAppStorage(){
