@@ -6,7 +6,9 @@ lett::UniqueId::UniqueId(const ulong_t &val) : lett::UniqueId::UniqueId(){
     this->m_id.store(val, std::memory_order_relaxed);
 }
 
-lett::UniqueId::UniqueId(const UniqueId &p_id) : lett::UniqueId::UniqueId(p_id.m_id.load()){}
+lett::UniqueId::UniqueId(UniqueId &p_id) : lett::UniqueId::UniqueId(p_id.m_id.load()){
+    p_id.Increase();
+}
 
 lett::UniqueId::UniqueId(UniqueId &&r_obj){
     this->m_id.store(r_obj.m_id.load(), std::memory_order_relaxed);
@@ -30,6 +32,18 @@ lett::UniqueId::ulong_t lett::UniqueId::RestoreAndIncrease(){
     return this->m_id.fetch_add(1);
 }
 
-lett::UniqueId::ulong_t lett::UniqueId::GetId(){
+lett::UniqueId::ulong_t lett::UniqueId::GetId() const{
     return this->m_id.load();
+}
+
+bool lett::UniqueId::compare(const UniqueId &is_id) const{
+    return this->GetId() == is_id.GetId();
+}
+
+bool lett::UniqueId::operator== (const UniqueId &is_id) const{
+    return this->GetId() == is_id.GetId();
+}
+
+bool lett::UniqueId::operator!= (const UniqueId &is_id) const{
+    return this->GetId() != is_id.GetId();
 }
