@@ -49,3 +49,14 @@ bool lett::UniqueId::operator== (const UniqueId &is_id) const{
 bool lett::UniqueId::operator!= (const UniqueId &is_id) const{
     return this->GetId() != is_id.GetId();
 }
+
+lett::UniqueId &lett::UniqueId::operator= (UniqueIdBase &l_obj){
+    this->m_id.fetch_add(l_obj.GetId());
+    l_obj.Increase();
+    return *this;
+}
+
+lett::UniqueId &lett::UniqueId::operator= (const UniqueId &l_obj){
+    this->m_id.fetch_add(l_obj.GetId());
+    return *this;
+}

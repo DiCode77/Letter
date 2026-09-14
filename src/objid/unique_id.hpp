@@ -37,6 +37,10 @@ public:
     
     bool operator== (const UniqueId&) const;
     bool operator!= (const UniqueId&) const;
+    
+    UniqueId &operator= (UniqueIdBase&);
+    UniqueId &operator= (const UniqueId&);
+    UniqueId &operator= (UniqueId&&) = delete;
 };
 
 class UniqueIdBase : public UniqueId{
