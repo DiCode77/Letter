@@ -6,13 +6,15 @@ lett::UniqueId::UniqueId(const ulong_t &val) : lett::UniqueId::UniqueId(){
     this->m_id.store(val, std::memory_order_relaxed);
 }
 
-lett::UniqueId::UniqueId(UniqueId &p_id) : lett::UniqueId::UniqueId(p_id.m_id.load()){
-    p_id.Increase();
-}
+lett::UniqueId::UniqueId(const UniqueId &p_id) : lett::UniqueId::UniqueId(p_id.m_id.load()){}
 
 lett::UniqueId::UniqueId(UniqueId &&r_obj){
     this->m_id.store(r_obj.m_id.load(), std::memory_order_relaxed);
     r_obj.m_id.store(1,  std::memory_order_relaxed);
+}
+
+lett::UniqueId::UniqueId(UniqueIdBase &l_obj) : lett::UniqueId::UniqueId(l_obj.GetId()){
+    l_obj.Increase();
 }
 
 void lett::UniqueId::Increase(){

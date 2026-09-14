@@ -12,6 +12,8 @@
 #include <functional>
 
 namespace lett {
+
+class UniqueIdBase;
 class UniqueId{
 public:
     using ulong_t = unsigned long;
@@ -20,8 +22,9 @@ private:
 public:
     UniqueId();
     UniqueId(const ulong_t&);
-    UniqueId(UniqueId&);
+    UniqueId(const UniqueId&);
     UniqueId(UniqueId&&);
+    UniqueId(UniqueIdBase&);
     
     void Increase();
     void Reduce();
@@ -36,7 +39,15 @@ public:
     bool operator!= (const UniqueId&) const;
 };
 
-static UniqueId IdUniquedDef;
+class UniqueIdBase : public UniqueId{
+public:
+    ~UniqueIdBase() = default;
+    UniqueIdBase() = default;
+    UniqueIdBase(const UniqueIdBase&) = delete;
+    UniqueIdBase(UniqueIdBase&&) = delete;
+};
+
+static UniqueIdBase UniqueID_NEW;
 
 }
 
@@ -47,5 +58,6 @@ public:
         return std::hash<lett::UniqueId::ulong_t>{}(is_is.GetId());
     }
 };
+
 
 #endif
