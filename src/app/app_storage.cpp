@@ -16,7 +16,7 @@ lett::Object *lett::AppStorage::GetObject(const lett::UniqueId &is_id){
     if (auto it = this->m_umap_obj.find(is_id); it != this->m_umap_obj.end()){
         return it->second;
     }
-    return {};
+    return nullptr;
 }
 
 bool lett::AppStorage::IsEmpty(const lett::UniqueId &is_id) const{

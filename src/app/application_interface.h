@@ -12,10 +12,14 @@
 
 namespace lett{
 class App;
+class UniqueId;
 }
 
 @interface AppInterface : NSObject <NSApplicationDelegate>
 @property (nonatomic, assign) lett::App *m_oem_app;
+
+- (void)DestroyTheTarget:(const lett::UniqueId&)is_id;
+
 @end
 
 #endif

@@ -8,34 +8,17 @@
 #ifndef application_hpp
 #define application_hpp
 
-#include <unordered_map>
-#include <functional>
 #include <algorithm>
 #include <ranges>
 
-namespace lett {
+#include <app_storage.hpp>
 
-class AppStorage{
-public:
-    using Func = std::function<bool()>;
-private:
-    std::unordered_map<void*, Func> m_um_func;
-public:
-    AppStorage() = default;
-    AppStorage(const AppStorage&) = delete;
-    AppStorage(AppStorage&&) = delete;
-    
-    void AddFunc(void*, Func);
-    Func GetFunc(void*);
-    bool IsEmpty(void*) const;
-    bool RemoveFunc(void*);
-};
+namespace lett{
 
 class AppBridge;
 class App{
-    AppBridge *m_app_bridge;
-    AppStorage m_storage;
-    long       m_window_quantity = 0;
+    AppBridge       *m_app_bridge;
+    lett::AppStorage m_quantity;
 public:
     virtual ~App();
     
@@ -47,11 +30,9 @@ public:
     void Terminate();
     void Stop();
     void Finish();
-    void *GetApp();
-    long GetWindowQuantity();
-    void IncreaseQuantity();
-    void DecreaseQuantity();
-    AppStorage &GetAppStorage();
+    void *GetNSApp(); // NSApplication*
+    void DestroyObject(const lett::UniqueId&);
+    lett::AppStorage &GetAppQuantity();
 };
 };
 #endif
