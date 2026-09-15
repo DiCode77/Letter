@@ -51,12 +51,12 @@ bool lett::UniqueId::operator!= (const UniqueId &is_id) const{
 }
 
 lett::UniqueId &lett::UniqueId::operator= (UniqueIdBase &l_obj){
-    this->m_id.fetch_add(l_obj.GetId());
+    this->m_id.store(l_obj.GetId(), std::memory_order_relaxed);
     l_obj.Increase();
     return *this;
 }
 
 lett::UniqueId &lett::UniqueId::operator= (const UniqueId &l_obj){
-    this->m_id.fetch_add(l_obj.GetId());
+    this->m_id.store(l_obj.GetId(), std::memory_order_relaxed);
     return *this;
 }
