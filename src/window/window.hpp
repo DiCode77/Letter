@@ -11,7 +11,6 @@
 #include <element.hpp>
 #include <property.hpp>
 #include <view.hpp>
-#include <application.hpp>
 
 #include <ranges>
 #include <algorithm>
@@ -26,7 +25,6 @@ class WindowBridge;
 
 template <>
 class Create <window> : public Element<Create<window>, window>{
-    lett::App    *m_app;
     WindowBridge *m_window_bridge;
 public:
     ~Create() override;
@@ -38,7 +36,6 @@ public:
     Create *Hide() override;
     Create *Close() override;
     Create *Destroy() override;
-    lett::App *GetAppLifeSpan() override;
 };
 };
 

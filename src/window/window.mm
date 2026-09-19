@@ -23,8 +23,10 @@
 }
 
 - (void)windowWillClose:(NSNotification *)notification{
-    if (auto p = self.m_oem_window->GetAppLifeSpan(); p != nullptr){
-        p->Stop();
+    if (self.m_oem_window != nil){
+        if (self.m_oem_window->GetApp() != nullptr){
+            self.m_oem_window->GetApp()->DestroyObject(self.m_oem_window->GetID());
+        }
     }
 }
 
@@ -55,16 +57,16 @@
 
 lett::WindowBridge::~WindowBridge(){
     if (this->m_ns_window != nil){
-        [this->m_ns_window close];
         [this->m_ns_window setDelegate:nil];
-        
-        if (this->m_interface != nil){
-            [this->m_interface release];
-            this->m_interface = nil;
-        }
-
+        [this->m_ns_window close];
         [this->m_ns_window release];
+        
         this->m_ns_window = nil;
+    }
+    
+    if (this->m_interface != nil){
+        [this->m_interface release];
+        this->m_interface = nil;
     }
 }
 
@@ -85,24 +87,32 @@ NSWindow *lett::WindowBridge::GetWindow(){
 }
 
 lett::Create<lett::window>::~Create(){
-    std::ranges::for_each(this->GetChildren().begin(), this->GetChildren().end(), [](lett::DataSet::DataPair &func){
-        func();
-    });
-    this->GetChildren().clear();
     delete this->m_window_bridge;
 }
 
-lett::Create<lett::window>::Create(const lett::Property<lett::window> &prop) : m_window_bridge(nullptr), m_app(prop.GetApp()){
+lett::Create<lett::window>::Create(const lett::Property<lett::window> &prop) : m_window_bridge(nullptr)/*, m_app(prop.GetApp()) */{
     if (!this->IsCreate(prop)){
         return;
     }
 }
 
-
 bool lett::Create<lett::window>::IsCreate(const lett::Property<lett::window> &prop){
+    // We check whether `window_bridge` has already been created to avoid creating it again and prevent memory leaks.
     if (this->m_window_bridge == nullptr){
+        // We get an object from the application to register the window.
+        if (prop.GetParent() != nullptr){
+            this->SetApp(prop.GetParent()->GetApp());
+        }else{
+            this->SetApp(prop.GetApp());
+        }
+        
+        // This is a very important step, since without registering the facility, it cannot be properly decommissioned and closed.
+        if (this->GetApp() == nullptr){
+            throw std::runtime_error("The pointer that is supposed to store the address of the Application object is empty!");
+        }
+        
         this->m_window_bridge = new WindowBridge();
-
+        
         NSWindow *window = [NSWindow alloc];
         NSRect rect = NSMakeRect(prop.GetSize().GetX(), prop.GetSize().GetY(), prop.GetPoint().GetX(), prop.GetPoint().GetY());
         
@@ -112,13 +122,13 @@ bool lett::Create<lett::window>::IsCreate(const lett::Property<lett::window> &pr
         
         this->SetView(reinterpret_cast<void*>(window.contentView));
         this->m_window_bridge->SetWindow(window, this);
+        this->SetId(prop.GetId());
+        
+        // Registering a property.
+        this->GetApp()->GetAppQuantity().AddObject(prop.GetId(), this);
         
         if (prop.GetParent() != nullptr){
             this->SetParent(prop.GetParent());
-            this->GetParent()->SetChildren({[this](){
-                delete this;
-                return true;
-            }});
             
         }else{
             this->SetParent(nullptr);
@@ -145,8 +155,4 @@ lett::Create<lett::window> *lett::Create<lett::window>::Close(){
 
 lett::Create<lett::window> *lett::Create<lett::window>::Destroy(){
     return this;
-}
-
-lett::App *lett::Create<lett::window>::GetAppLifeSpan(){
-    return this->m_app;
 }

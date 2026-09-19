@@ -16,7 +16,7 @@ set(LIB_NAME "${PROJECT_NAME}")
 
 # // Framework
 
-file(GLOB_RECURSE SRC_APPL_FILES    "${SRC_APPL}/*.hpp" "${SRC_APPL}/*.h" "${SRC_APPL}/*.mm")
+file(GLOB_RECURSE SRC_APPL_FILES    "${SRC_APPL}/*.hpp" "${SRC_APPL}/*.cpp" "${SRC_APPL}/*.h" "${SRC_APPL}/*.mm")
 file(GLOB_RECURSE SRC_CORE_FILES    "${SRC_CORE}/*.hpp" "${SRC_CORE}/*.h")
 file(GLOB_RECURSE SRC_VIEW_FILES    "${SRC_VIEW}/*.hpp" "${SRC_VIEW}/*.h" "${SRC_VIEW}/*.mm")
 file(GLOB_RECURSE SRC_TOOLS_FILES   "${SRC_TOOLS}/*.hpp" "${SRC_TOOLS}/*.cpp" "${SRC_TOOLS}/*.inl" "${SRC_TOOLS}/*.mm")
