@@ -19,6 +19,7 @@ class AppBridge;
 class App{
     AppBridge       *m_app_bridge;
     lett::AppStorage m_quantity;
+    bool             m_is_close = true;
 public:
     virtual ~App();
     
@@ -28,11 +29,13 @@ public:
     
     void Run();
     void Terminate();
-    void Stop();
+    void Stop();      // Stops the event loop without releasing resources.
     void Finish();
     void *GetNSApp(); // NSApplication*
     void DestroyObject(const lett::UniqueId&);
     lett::AppStorage &GetAppQuantity();
+    void PreventAppFromClosing(bool);
+    bool GetIsClosing() const;
 };
 };
 #endif

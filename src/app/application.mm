@@ -7,7 +7,8 @@
     self = [super init];
     
     if (self){
-        _m_oem_app = nil;
+        _m_oem_app    = nil;
+        _m_closed_app = false;
     }
     
     return self;
@@ -24,6 +25,8 @@
             
             self.m_oem_app->GetAppQuantity().RemoveObject(is_id);
             
+            self.m_closed_app = true;
+            
             NSApplication *app = reinterpret_cast<NSApplication*>(self.m_oem_app->GetNSApp());
             [app terminate:nil];
         }
@@ -31,12 +34,23 @@
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender{
-    if (!self.m_oem_app->GetAppQuantity().Empty()){
+    if (!self.m_oem_app->GetAppQuantity().Empty() && self.m_closed_app == true){
+        self.m_closed_app = false;
+        
         return NSTerminateCancel;
     }
     
-    if ([[sender windows] count] != 0){
+    if (!self.m_oem_app->GetIsClosing()){
         return NSTerminateCancel;
+    }
+    
+    // As for this block of code, it works as intended, but I'm leaving this comment so that we can explore alternatives in the future.
+    if (self.m_closed_app == false){
+        auto &um_list = self.m_oem_app->GetAppQuantity().GetObjectList();
+        for (auto &obj : um_list | std::views::values){
+            delete obj;
+        }
+        um_list.clear();
     }
     
     return NSTerminateNow;
@@ -78,4 +92,12 @@ void lett::App::DestroyObject(const lett::UniqueId &is_id){
 
 lett::AppStorage &lett::App::GetAppQuantity(){
     return this->m_quantity;
+}
+
+void lett::App::PreventAppFromClosing(bool is_status){
+    this->m_is_close = is_status;
+}
+
+bool lett::App::GetIsClosing() const{
+    return this->m_is_close;
 }
