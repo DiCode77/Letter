@@ -48,6 +48,12 @@ lett::Property<T> &lett::Property<T>::auto_resize(bool is_bool){
 }
 
 template <typename T>
+lett::Property<T> &lett::Property<T>::id(const lett::UniqueId &is_id){
+    this->m_id = is_id;
+    return *this;
+}
+
+template <typename T>
 lett::App *lett::Property<T>::GetApp() const{
     return this->m_app;
 }
@@ -80,4 +86,9 @@ int lett::Property<T>::GetStyle() const{
 template <typename T>
 bool lett::Property<T>::GetAutoResize() const{
     return this->m_auto_resize;
+}
+
+template <typename T>
+lett::UniqueId::ulong_t lett::Property<T>::GetId() const{
+    return this->m_id.GetId();
 }

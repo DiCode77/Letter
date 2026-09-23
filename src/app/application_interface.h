@@ -17,7 +17,7 @@ class UniqueId;
 
 @interface AppInterface : NSObject <NSApplicationDelegate>
 @property (nonatomic, assign) lett::App *m_oem_app;
-@property (nonatomic, assign) bool       m_closed_app;
+@property (nonatomic, assign) bool       m_classic_closure_app;
 
 - (void)DestroyTheTarget:(const lett::UniqueId&)is_id;
 

@@ -20,7 +20,13 @@ public:
     virtual TemplType *Show() = 0;
     virtual TemplType *Hide() = 0;
     virtual TemplType *Close() = 0;
+//    virtual TemplType *Minimize() = 0;
+ //   virtual TemplType *DeMinimize() = 0;
+//    virtual TemplType *Zoom() = 0;
     virtual TemplType *Destroy() = 0;
+//    virtual lett::App *GetAppLifeSpan(){
+//        return nullptr;
+//    }
 };
 }
 

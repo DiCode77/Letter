@@ -26,6 +26,8 @@
     if (self.m_oem_window != nil){
         if (self.m_oem_window->GetApp() != nullptr){
             self.m_oem_window->GetApp()->DestroyObject(self.m_oem_window->GetID());
+        }else{
+            throw std::runtime_error("The property was not registered!");
         }
     }
 }
@@ -70,15 +72,17 @@ lett::WindowBridge::~WindowBridge(){
     }
 }
 
-lett::WindowBridge::WindowBridge() : m_ns_window(nil){}
+lett::WindowBridge::WindowBridge() : m_ns_window(nil), m_interface(nil){}
 
 void lett::WindowBridge::SetWindow(NSWindow *window, Create<lett::window> *p_window){
-    if (this->m_ns_window == nil){
+    if (this->m_ns_window == nil && this->m_interface == nil){
         this->m_ns_window = window;
         this->m_interface = [[WindowInterface alloc] init];
         
         [this->m_interface setM_oem_window:p_window];
         [this->m_ns_window setDelegate:this->m_interface];
+    }else{
+        throw std::runtime_error("One of the objects has already been created!");
     }
 }
 
@@ -125,7 +129,7 @@ bool lett::Create<lett::window>::IsCreate(const lett::Property<lett::window> &pr
         this->SetId(prop.GetId());
         
         // Registering a property.
-        this->GetApp()->GetAppQuantity().AddObject(prop.GetId(), this);
+        this->GetApp()->GetAppStorageQuantity().AddObject(prop.GetId(), this);
         
         if (prop.GetParent() != nullptr){
             this->SetParent(prop.GetParent());

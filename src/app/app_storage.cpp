@@ -32,6 +32,6 @@ bool lett::AppStorage::RemoveObject(const lett::UniqueId &is_id){
     return false;
 }
 
-lett::AppStorage::UMapObj_t &lett::AppStorage::GetObjectList(){
+lett::AppStorage::UMapObj_t &lett::AppStorage::GetUMapObjectList(){
     return this->m_umap_obj;
 }

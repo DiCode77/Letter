@@ -29,7 +29,7 @@ public:
     lett::Object *GetObject(const lett::UniqueId&);
     bool IsEmpty(const lett::UniqueId&) const;
     bool RemoveObject(const lett::UniqueId&);
-    UMapObj_t &GetObjectList();
+    UMapObj_t &GetUMapObjectList();
 };
 
 }

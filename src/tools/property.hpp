@@ -13,6 +13,7 @@
 #include <styles.hpp>
 #include <dataset.hpp>
 #include <application.hpp>
+#include <unique_id.hpp>
 
 namespace lett{
 
@@ -25,6 +26,7 @@ class Property{
     lett::Rect<lett::size>  m_size   = lett::default_size;
     int                     m_style  = 0; // ?
     bool                    m_auto_resize = true;
+    lett::UniqueId          m_id     = lett::UniqueID_NEW;
 public:
     Property &app(lett::App*);
     Property &parent(DataSet*);
@@ -33,6 +35,7 @@ public:
     Property &size(const lett::Rect<lett::size>&);
     Property &style(int);
     Property &auto_resize(bool);
+    Property &id(const lett::UniqueId&);
     
     lett::App *GetApp() const;
     DataSet *GetParent() const;
@@ -41,6 +44,7 @@ public:
     lett::Rect<lett::size> GetSize() const;
     int GetStyle() const;
     bool GetAutoResize() const;
+    lett::UniqueId::ulong_t GetId() const;
 };
 
 #include <property.inl>
