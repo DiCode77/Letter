@@ -106,6 +106,9 @@ bool lett::Create<lett::window>::IsCreate(const lett::Property<lett::window> &pr
         // We get an object from the application to register the window.
         if (prop.GetParent() != nullptr){
             this->SetApp(prop.GetParent()->GetApp());
+            
+            // We get a pointer to the parent, if there is one )))
+            this->SetParent(prop.GetParent());
         }else{
             this->SetApp(prop.GetApp());
         }
@@ -122,7 +125,6 @@ bool lett::Create<lett::window>::IsCreate(const lett::Property<lett::window> &pr
         
         [window initWithContentRect:rect styleMask:(NSWindowStyleMask)prop.GetStyle() backing:NSBackingStoreBuffered defer:NO];
         [window setTitle:[NSString stringWithUTF8String:prop.GetTitle().data()]];
-        [window makeKeyAndOrderFront:nil];
         
         this->SetView(reinterpret_cast<void*>(window.contentView));
         this->m_window_bridge->SetWindow(window, this);
@@ -131,12 +133,6 @@ bool lett::Create<lett::window>::IsCreate(const lett::Property<lett::window> &pr
         // Registering a property.
         this->GetApp()->GetAppStorageQuantity().AddObject(prop.GetId(), this);
         
-        if (prop.GetParent() != nullptr){
-            this->SetParent(prop.GetParent());
-            
-        }else{
-            this->SetParent(nullptr);
-        }
         return true;
     }
     return false;
@@ -152,11 +148,11 @@ lett::Create<lett::window> *lett::Create<lett::window>::Hide(){
     return this;
 }
 
-lett::Create<lett::window> *lett::Create<lett::window>::Close(){
-    [this->m_window_bridge->GetWindow() close];
+lett::Create<lett::window> *lett::Create<lett::window>::Center(){
+    [this->m_window_bridge->GetWindow() center];
     return this;
 }
 
-lett::Create<lett::window> *lett::Create<lett::window>::Destroy(){
-    return this;
+void lett::Create<lett::window>::Close(){
+    [this->m_window_bridge->GetWindow() close];
 }

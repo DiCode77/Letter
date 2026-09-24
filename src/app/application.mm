@@ -42,11 +42,7 @@
     
     // As for this block of code, it works as intended, but I'm leaving this comment so that we can explore alternatives in the future.
     if (self.m_classic_closure_app == false){
-        auto &um_list = self.m_oem_app->GetAppStorageQuantity().GetUMapObjectList();
-        for (auto &obj : um_list | std::views::values){
-            delete obj;
-        }
-        um_list.clear();
+        self.m_oem_app->Finish();
     }
     
     return NSTerminateNow;
@@ -76,7 +72,13 @@ void lett::App::Stop(){
     [this->m_app_bridge->GetApp() stop:nil];
 }
 
-void lett::App::Finish(){}
+void lett::App::Finish(){
+    auto &um_list = this->GetAppStorageQuantity().GetUMapObjectList();
+    for (auto &obj : um_list | std::views::values){
+        delete obj;
+    }
+    um_list.clear();
+}
 
 void *lett::App::GetNSApp(){
    return reinterpret_cast<void*>(this->m_app_bridge->GetApp());

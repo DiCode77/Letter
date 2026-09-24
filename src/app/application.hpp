@@ -26,12 +26,17 @@ public:
     App(const App&) = delete;
     App(App&&) = delete;
     
-    void Run();
+    void Run();       // Launch the app.
+    
+    // This method triggers the Terminate event and calls the applicationShouldTerminate delegate, which causes the Finish() method to execute, thereby terminating the program.
     void Terminate();
+    
     void Stop();      // Stops the event loop without releasing resources.
-    void Finish();
+    void Finish();    // This will automatically close all windows in the app and terminate it.
     void *GetNSApp(); // NSApplication*
     void DestroyObject(const lett::UniqueId&); // Completely deletes the object; you just need to specify its ID.
+    
+    // Returns a map containing all registered objects; you should not use this, as incorrect usage may cause issues with object lifecycle management
     lett::AppStorage &GetAppStorageQuantity();
 };
 };

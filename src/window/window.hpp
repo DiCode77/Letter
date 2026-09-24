@@ -34,8 +34,8 @@ public:
     bool IsCreate(const lett::Property<window>&) override;
     Create *Show() override;
     Create *Hide() override;
-    Create *Close() override;
-    Create *Destroy() override;
+    Create *Center() override;
+    void   Close() override;
 };
 };
 

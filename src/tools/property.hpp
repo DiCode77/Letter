@@ -21,7 +21,7 @@ template <typename>
 class Property{
     lett::App               *m_app    = nullptr;
     DataSet                 *m_parent = nullptr;
-    std::string_view        m_title;
+    std::string_view        m_title  = lett::default_title;
     lett::Rect<lett::point> m_point  = lett::default_point;
     lett::Rect<lett::size>  m_size   = lett::default_size;
     int                     m_style  = 0; // ?
