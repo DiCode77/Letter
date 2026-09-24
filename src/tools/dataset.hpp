@@ -11,35 +11,37 @@
 #include <object.hpp>
 #include <unique_id.hpp>
 #include <application.hpp>
+#include <app_storage.hpp>
 
 #include <unordered_map>
 #include <functional>
 
 namespace lett{
 class DataSet : public lett::Object{
-public:
-    using DataPair = std::function<bool()>;
-private:
+    bool       m_is_main  = false;
     lett::App *m_app      = nullptr;
     void      *m_view     = nullptr;
     DataSet   *m_parent   = nullptr;
-    std::unordered_map<void*, DataPair> m_children;
+    lett::AppStorage m_children;
     lett::UniqueId m_id;
 public:
     virtual ~DataSet() = default;
     DataSet() = default;
     
+    bool SetMain(bool);
     void SetApp(lett::App*);
     void SetView(void*);
     void SetParent(DataSet*);
-    void SetChildren(void*, DataPair &&);
+    void SetChildren(const lett::UniqueId&, lett::Object*);
     void SetId(const lett::UniqueId&);
     
+    bool GetMain() const;
     lett::App *GetApp();
     void *GetObject();
     void *GetView();
     DataSet *GetParent();
-    std::unordered_map<void*, DataPair> &GetChildren();
+    lett::AppStorage &GetChildrenList();
+    lett::Object *GetChildrenId(const lett::UniqueId&);
     lett::UniqueId::ulong_t GetID();
 };
 }

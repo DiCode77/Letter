@@ -24,10 +24,15 @@
 
 - (void)windowWillClose:(NSNotification *)notification{
     if (self.m_oem_window != nil){
-        if (self.m_oem_window->GetApp() != nullptr){
-            self.m_oem_window->GetApp()->DestroyObject(self.m_oem_window->GetID());
+        if (self.m_oem_window->GetMain() == true){
+            if (self.m_oem_window->GetApp() != nullptr){
+                self.m_oem_window->GetApp()->DestroyObject(self.m_oem_window->GetID());
+            }else{
+                throw std::runtime_error("The property was not registered!");
+            }
         }else{
-            throw std::runtime_error("The property was not registered!");
+            self.m_oem_window->GetParent()->GetChildrenList().RemoveObject(self.m_oem_window->GetID());
+            delete self.m_oem_window;
         }
     }
 }
@@ -91,6 +96,13 @@ NSWindow *lett::WindowBridge::GetWindow(){
 }
 
 lett::Create<lett::window>::~Create(){
+    auto &obj = this->GetChildrenList();
+    if (!obj.Empty()){
+        for (lett::Object *p_obj : obj.GetUMapObjectList() | std::views::values){
+            delete p_obj;
+        }
+        obj.GetUMapObjectList().clear();
+    }
     delete this->m_window_bridge;
 }
 
@@ -105,11 +117,11 @@ bool lett::Create<lett::window>::IsCreate(const lett::Property<lett::window> &pr
     if (this->m_window_bridge == nullptr){
         // We get an object from the application to register the window.
         if (prop.GetParent() != nullptr){
+            this->SetMain(false);
             this->SetApp(prop.GetParent()->GetApp());
-            
-            // We get a pointer to the parent, if there is one )))
-            this->SetParent(prop.GetParent());
+            this->SetParent(prop.GetParent()); // We get a pointer to the parent, if there is one )))
         }else{
+            this->SetMain(true);
             this->SetApp(prop.GetApp());
         }
         
@@ -131,7 +143,11 @@ bool lett::Create<lett::window>::IsCreate(const lett::Property<lett::window> &pr
         this->SetId(prop.GetId());
         
         // Registering a property.
-        this->GetApp()->GetAppStorageQuantity().AddObject(prop.GetId(), this);
+        if (this->GetMain()){
+            this->GetApp()->GetAppStorageQuantity().AddObject(prop.GetId(), this);
+        }else{
+            this->GetParent()->SetChildren(prop.GetId(), this);
+        }
         
         return true;
     }

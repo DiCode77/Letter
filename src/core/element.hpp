@@ -14,7 +14,7 @@
 namespace lett{
 template <typename TemplType, typename PropType>
 class Element : public DataSet{
-public:
+protected:
     virtual ~Element() = default;
     virtual bool IsCreate(const lett::Property<PropType>&) = 0;
     virtual TemplType *Show() = 0;
