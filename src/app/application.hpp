@@ -19,6 +19,7 @@ class AppBridge;
 class App{
     AppBridge       *m_app_bridge;
     lett::AppStorage m_quantity;
+    bool m_prevent_main_loop_stop;
 public:
     virtual ~App();
     
@@ -32,12 +33,15 @@ public:
     void Terminate();
     
     void Stop();      // Stops the event loop without releasing resources.
-    void Finish();    // This will automatically close all windows in the app and terminate it.
+    void Finish();    // This will automatically close all windows in the program.
     void *GetNSApp(); // NSApplication*
     void DestroyObject(const lett::UniqueId&); // Completely deletes the object; you just need to specify its ID.
     
     // Returns a map containing all registered objects; you should not use this, as incorrect usage may cause issues with object lifecycle management
     lett::AppStorage &GetAppStorageQuantity();
+    
+    void SetMainLoopStatus(bool);
+    bool GetMainLoopStatus() const;
 };
 };
 #endif

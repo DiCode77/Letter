@@ -27,8 +27,12 @@
             
             self.m_classic_closure_app = true;
             
-            NSApplication *app = reinterpret_cast<NSApplication*>(self.m_oem_app->GetNSApp());
-            [app terminate:nil];
+            if (self.m_oem_app->GetMainLoopStatus() == false){
+                NSApplication *app = reinterpret_cast<NSApplication*>(self.m_oem_app->GetNSApp());
+                [app terminate:nil];
+            }else{
+                self.m_classic_closure_app = false;
+            }
         }
     }
 }
@@ -41,7 +45,7 @@
     }
     
     // As for this block of code, it works as intended, but I'm leaving this comment so that we can explore alternatives in the future.
-    if (self.m_classic_closure_app == false){
+    if (self.m_classic_closure_app == false && !self.m_oem_app->GetAppStorageQuantity().Empty()){
         self.m_oem_app->Finish();
     }
     
@@ -58,7 +62,7 @@ lett::App::~App(){
     delete this->m_app_bridge;
 }
 
-lett::App::App() : m_app_bridge(new AppBridge(this)){}
+lett::App::App() : m_app_bridge(new AppBridge(this)), m_prevent_main_loop_stop(false){}
 
 void lett::App::Run(){
     [this->m_app_bridge->GetApp() run];
@@ -74,10 +78,12 @@ void lett::App::Stop(){
 
 void lett::App::Finish(){
     auto &um_list = this->GetAppStorageQuantity().GetUMapObjectList();
-    for (auto &obj : um_list | std::views::values){
-        delete obj;
+    if (!um_list.empty()){
+        for (auto &obj : um_list | std::views::values){
+            delete obj;
+        }
+        um_list.clear();
     }
-    um_list.clear();
 }
 
 void *lett::App::GetNSApp(){
@@ -90,4 +96,12 @@ void lett::App::DestroyObject(const lett::UniqueId &is_id){
 
 lett::AppStorage &lett::App::GetAppStorageQuantity(){
     return this->m_quantity;
+}
+
+void lett::App::SetMainLoopStatus(bool is_status){
+    this->m_prevent_main_loop_stop = is_status;
+}
+
+bool lett::App::GetMainLoopStatus() const{
+    return this->m_prevent_main_loop_stop;
 }
