@@ -23,8 +23,8 @@ class view;
 class ViewBridge;
 
 template <>
-class Add <view> : public Element<Add<view>, view>{
-    ViewBridge *m_view;
+class Add <view> : public Element<Add<view>>{
+    ViewBridge *m_view_bridge;
 public:
     ~Add() override;
     Add() = delete;
@@ -32,8 +32,6 @@ public:
     bool IsCreate(const lett::Property<view>&) override;
     Add *Show() override;
     Add *Hide() override;
-    Add *Close() override;
-    Add *Destroy() override;
 };
 
 };

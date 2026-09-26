@@ -24,7 +24,7 @@ class window;
 class WindowBridge;
 
 template <>
-class Create <window> : public Element<Create<window>, window>{
+class Create <window> : public Element<Create<window>>{
     WindowBridge *m_window_bridge;
 public:
     ~Create() override;
@@ -36,6 +36,10 @@ public:
     Create *Hide() override;
     Create *Center() override;
     void   Close() override;
+    
+    using DataSet::GetApp;
+    using DataSet::GetMain;
+    using DataSet::GetID;
 };
 };
 

@@ -12,23 +12,46 @@
 #include <property.hpp>
 
 namespace lett{
-template <typename TemplType, typename PropType>
-class Element : public DataSet{
-protected:
-    virtual ~Element() = default;
-    virtual bool IsCreate(const lett::Property<PropType>&) = 0;
-    virtual TemplType *Show() = 0;
-    virtual TemplType *Hide() = 0;
-    virtual TemplType *Center() = 0;
-    virtual void       Close() = 0;
-//    virtual TemplType *Minimize() = 0;
- //   virtual TemplType *DeMinimize() = 0;
-//    virtual TemplType *Zoom() = 0;
-   // virtual TemplType *Destroy() = 0; // ?
-//    virtual lett::App *GetAppLifeSpan(){
-//        return nullptr;
-//    }
+
+template <typename>
+class Element;
+
+class window;
+class view;
+
+template <typename T>
+class Create;
+
+template <typename>
+class Add;
+
+template <>
+class Element <Create<window>> : public DataSet{ // ?
+public:
+    ~Element() override = default;
+    
+    virtual bool IsCreate(const lett::Property<window>&) = 0;
+    virtual Create<window> *Show() = 0;
+    virtual Create<window> *Hide() = 0;
+    virtual Create<window> *Center(){}
+    
+    virtual void Close() = 0;
 };
+
+template <>
+class Element <Add<view>> : protected DataSet{
+public:
+    ~Element() override = default;
+    
+    virtual bool IsCreate(const lett::Property<view>&) = 0;
+    virtual Add<view> *Show() = 0;
+    virtual Add<view> *Hide() = 0;
+    virtual Add<view> *Center(){}
+    
+    virtual void Close() = 0;
+};
+
+
 }
 
 #endif
