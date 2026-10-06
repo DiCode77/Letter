@@ -18,38 +18,108 @@
 namespace lett{
 
 template <typename>
-class Property{
-    lett::App               *m_app    = nullptr;
-    lett::Several           *m_parent = nullptr;
-    std::string_view        m_title  = lett::default_title;
+class Property;
+
+class window;
+class view;
+
+class AppPropBase{
+protected:
+    lett::App *m_app = nullptr;
+public:
+    virtual ~AppPropBase() = default;
+    virtual AppPropBase &app(lett::App*) = 0;
+    virtual lett::App *GetApp() const = 0;
+};
+
+class ParentPropBase{
+protected:
+    lett::Several *m_parent = nullptr;
+public:
+    virtual ~ParentPropBase() = default;
+    virtual ParentPropBase &parent(lett::Several*) = 0;
+    virtual lett::Several *GetParent() const = 0;
+};
+
+class TitlePropBase{
+protected:
+    std::string_view m_title = lett::default_title;
+public:
+    virtual ~TitlePropBase() = default;
+    virtual TitlePropBase &title(const std::string_view&) = 0;
+    virtual std::string_view GetTitle() const = 0;
+};
+
+class RectPropBase{
+protected:
     lett::Rect<lett::point> m_point  = lett::default_point;
     lett::Rect<lett::size>  m_size   = lett::default_size;
-    int                     m_style  = 0; // ?
-    bool                    m_auto_resize = true;
-    lett::UniqueId          m_id     = lett::UniqueID_NEW;
 public:
-    Property &app(lett::App*);
-    Property &parent(lett::Several*);
-    Property &title(const std::string_view&);
-    Property &point(const lett::Rect<lett::point>&);
-    Property &size(const lett::Rect<lett::size>&);
-    Property &style(int);
-    Property &auto_resize(bool);
+    virtual ~RectPropBase() = default;
+    virtual RectPropBase &point(const lett::Rect<lett::point>&) = 0;
+    virtual RectPropBase &size(const lett::Rect<lett::size>&) = 0;
+    virtual lett::Rect<lett::point> GetPoint() const = 0;
+    virtual lett::Rect<lett::size> GetSize() const = 0;
+};
+
+class StylePropBase{
+protected:
+    int  m_style  = 0; // ?
+    bool m_auto_resize = true;
+public:
+    virtual ~StylePropBase() = default;
+    virtual StylePropBase &style(int) = 0;
+    virtual StylePropBase &auto_resize(bool) = 0;
+    virtual int GetStyle() const = 0;
+    virtual bool GetAutoResize() const = 0;
+};
+
+template <>
+class Property <window> final : public AppPropBase, public ParentPropBase, public TitlePropBase, public RectPropBase, public StylePropBase{
+private:
+    lett::UniqueId m_id = lett::UniqueID_NEW;
+public:
+    ~Property() override;
+    
+    Property &app(lett::App*) override;
+    Property &parent(lett::Several*) override;
+    Property &title(const std::string_view&) override;
+    Property &point(const lett::Rect<lett::point>&) override;
+    Property &size(const lett::Rect<lett::size>&) override;
+    Property &style(int) override;
+    Property &auto_resize(bool) override;
     Property &id(const lett::UniqueId&);
     
-    lett::App *GetApp() const;
-    lett::Several *GetParent() const;
-    std::string_view GetTitle() const;
-    lett::Rect<lett::point> GetPoint() const;
-    lett::Rect<lett::size> GetSize() const;
-    int GetStyle() const;
-    bool GetAutoResize() const;
+    lett::App *GetApp() const override;
+    lett::Several *GetParent() const override;
+    std::string_view GetTitle() const override;
+    lett::Rect<lett::point> GetPoint() const override;
+    lett::Rect<lett::size> GetSize() const override;
+    int GetStyle() const override;
+    bool GetAutoResize() const override;
     lett::UniqueId::ulong_t GetId() const;
 };
 
+template <>
+class Property <view> final : public ParentPropBase, public TitlePropBase, public RectPropBase{
+private:
+    lett::UniqueId m_id = lett::UniqueID_NEW;
+public:
+    ~Property() override;
+    
+    Property &parent(lett::Several*) override;
+    Property &title(const std::string_view&) override;
+    Property &point(const lett::Rect<lett::point>&) override;
+    Property &size(const lett::Rect<lett::size>&) override;
+    Property &id(const lett::UniqueId&);
+    
+    lett::Several *GetParent() const override;
+    std::string_view GetTitle() const override;
+    lett::Rect<lett::point> GetPoint() const override;
+    lett::Rect<lett::size> GetSize() const override;
+    lett::UniqueId::ulong_t GetId() const;
+};
 
-
-#include <property.inl>
 }
 
 #endif
