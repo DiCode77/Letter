@@ -45,7 +45,7 @@ set_target_properties(${LIB_NAME} PROPERTIES
                                            
                                             FRAMEWORK TRUE 
                                             FRAMEWORK_VERSION A 
-                                            UBLIC_HEADER "${PUBLIC_HEADERS}")  
+                                            PUBLIC_HEADER "${PUBLIC_HEADERS}")  
 
 
 source_group("src\\app"    FILES ${SRC_APPL_FILES})

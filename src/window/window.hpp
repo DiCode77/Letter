@@ -10,7 +10,7 @@
 
 #include <element.hpp>
 #include <property.hpp>
-#include <view.hpp>
+#include <window_property.hpp>
 
 #include <ranges>
 #include <algorithm>
@@ -32,14 +32,10 @@ public:
 
     Create(const lett::Property<window>&);
     bool IsCreate(const lett::Property<window>&) override;
-    Create *Show() override; 
+    Create *Show() override;
     Create *Hide() override;
     Create *Center() override;
     void   Close() override;
-    
-    using DataSet::GetApp;
-    using DataSet::GetMain;
-    using DataSet::GetID;
 };
 };
 

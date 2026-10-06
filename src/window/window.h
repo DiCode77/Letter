@@ -18,7 +18,7 @@ public:
     ~WindowBridge();
     WindowBridge();
     
-    void SetWindow(NSWindow*, Create<lett::window>*);
+    void SetWindow(NSWindow*, lett::Object*, lett::DataSet*);
     NSWindow *GetWindow();
 };
 }

@@ -7,7 +7,8 @@
     self = [super init];
     
     if (self){
-        _m_oem_window = nil;
+        _m_oem_object = nil;
+        _m_data_set   = nil;
     }
     
     return self;
@@ -23,17 +24,19 @@
 }
 
 - (void)windowWillClose:(NSNotification *)notification{
-    if (self.m_oem_window != nil){
-        if (self.m_oem_window->GetMain() == true){
-            if (self.m_oem_window->GetApp() != nullptr){
-                self.m_oem_window->GetApp()->DestroyObject(self.m_oem_window->GetID());
+    if (self.m_oem_object != nil && self.m_data_set != nil){
+        if (self.m_data_set->GetMain() == true){
+            if (self.m_data_set->GetApp() != nullptr){
+                self.m_data_set->GetApp()->DestroyObject(self.m_data_set->GetID());
             }else{
                 throw std::runtime_error("The property was not registered!");
             }
         }else{
-            self.m_oem_window->GetParent()->GetChildrenList().RemoveObject(self.m_oem_window->GetID());
-            delete self.m_oem_window;
+            self.m_data_set->GetParent()->GetChildrenList().RemoveObject(self.m_data_set->GetID());
+            delete self.m_oem_object;
         }
+    }else{
+        throw std::range_error("The class is not polymorphic!");
     }
 }
 
@@ -79,12 +82,13 @@ lett::WindowBridge::~WindowBridge(){
 
 lett::WindowBridge::WindowBridge() : m_ns_window(nil), m_interface(nil){}
 
-void lett::WindowBridge::SetWindow(NSWindow *window, Create<lett::window> *p_window){
+void lett::WindowBridge::SetWindow(NSWindow *window, lett::Object *p_obj, lett::DataSet *p_dset){
     if (this->m_ns_window == nil && this->m_interface == nil){
         this->m_ns_window = window;
         this->m_interface = [[WindowInterface alloc] init];
         
-        [this->m_interface setM_oem_window:p_window];
+        [this->m_interface setM_oem_object:p_obj];
+        [this->m_interface setM_data_set:p_dset];
         [this->m_ns_window setDelegate:this->m_interface];
     }else{
         throw std::runtime_error("One of the objects has already been created!");
@@ -118,7 +122,7 @@ bool lett::Create<lett::window>::IsCreate(const lett::Property<lett::window> &pr
         // We get an object from the application to register the window.
         if (prop.GetParent() != nullptr){
             this->SetMain(false);
-            this->SetApp(prop.GetParent()->GetApp());
+            this->SetApp(dynamic_cast<DataSet*>(prop.GetParent())->GetApp());
             this->SetParent(prop.GetParent()); // We get a pointer to the parent, if there is one )))
         }else{
             this->SetMain(true);
@@ -139,7 +143,7 @@ bool lett::Create<lett::window>::IsCreate(const lett::Property<lett::window> &pr
         [window setTitle:[NSString stringWithUTF8String:prop.GetTitle().data()]];
         
         this->SetView(reinterpret_cast<void*>(window.contentView));
-        this->m_window_bridge->SetWindow(window, this);
+        this->m_window_bridge->SetWindow(window, this, this);
         this->SetId(prop.GetId());
         
         // Registering a property.

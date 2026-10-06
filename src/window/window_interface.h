@@ -11,13 +11,14 @@
 #include <Cocoa/Cocoa.h>
 
 namespace lett{
-template <typename>
-class Create;
-class window;
+class Object;
+class DataSet;
 }
 
 @interface WindowInterface : NSObject <NSWindowDelegate>
-@property (nonatomic, assign) lett::Create<lett::window> *m_oem_window;
+// Actually, it's not really necessary right now, but it will be needed as the project progresses.
+@property (nonatomic, assign) lett::Object  *m_oem_object;
+@property (nonatomic, assign) lett::DataSet *m_data_set;
 @end
 
 #endif

@@ -17,7 +17,14 @@
 #include <functional>
 
 namespace lett{
-class DataSet : public lett::Object{
+template <typename>
+class Create;
+class window;
+
+template <typename>
+class Property;
+
+class DataSet{
     bool       m_is_main  = false;
     lett::App *m_app      = nullptr;
     void      *m_view     = nullptr;
