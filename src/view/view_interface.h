@@ -8,4 +8,6 @@
 #ifndef view_interface_h
 #define view_interface_h
 
+#include <Cocoa/Cocoa.h>
+
 #endif

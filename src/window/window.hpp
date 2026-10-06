@@ -28,8 +28,7 @@ class Create <window> : public Element<Create<window>>{
     WindowBridge *m_window_bridge;
 public:
     ~Create() override;
-    Create() = delete;
-
+    Create();
     Create(const lett::Property<window>&);
     bool IsCreate(const lett::Property<window>&) override;
     Create *Show() override;

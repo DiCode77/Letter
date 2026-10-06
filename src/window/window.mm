@@ -110,7 +110,9 @@ lett::Create<lett::window>::~Create(){
     delete this->m_window_bridge;
 }
 
-lett::Create<lett::window>::Create(const lett::Property<lett::window> &prop) : m_window_bridge(nullptr)/*, m_app(prop.GetApp()) */{
+lett::Create<lett::window>::Create() : m_window_bridge(nullptr){}
+
+lett::Create<lett::window>::Create(const lett::Property<lett::window> &prop) : lett::Create<lett::window>::Create(){
     if (!this->IsCreate(prop)){
         return;
     }

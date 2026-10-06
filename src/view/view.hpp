@@ -27,7 +27,7 @@ class Add <view> : public Element<Add<view>>{
     ViewBridge *m_view_bridge;
 public:
     ~Add() override;
-    Add() = delete;
+    Add();
     Add(const lett::Property<view>&);
     bool IsCreate(const lett::Property<view>&) override;
     Add *Show() override;
