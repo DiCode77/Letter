@@ -38,8 +38,18 @@ public:
     virtual Te *Hide() = 0;
 };
 
+template <typename Te>
+class ConnectFunc{
+public:
+    virtual ~ConnectFunc() = default;
+    virtual Te *Connect(const lett::EnumId&, std::function<void(const lett::Event&)>) = 0;
+    virtual Te *DisConnect(const lett::EnumId&) = 0;
+    virtual Te *RunTheFunction(const lett::EnumId&, const lett::Event&) = 0;
+    virtual bool IsConnect(const lett::EnumId&) = 0;
+};
+
 template <>
-class Element <Create<window>> : public Several, public Overview<Create<window>>{ // ?
+class Element <Create<window>> : public Several, public Overview<Create<window>>, public ConnectFunc<Create<window>>{ // ?
 public:
     ~Element() override = default;
     
@@ -47,7 +57,6 @@ public:
     virtual Create<window> *Center() = 0;
     
     virtual void Close() = 0;
-    
 };
 
 template <>

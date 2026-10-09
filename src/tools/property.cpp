@@ -32,7 +32,7 @@ lett::Property<lett::window> &lett::Property<lett::window>::size(const lett::Rec
     return *this;
 }
 
-lett::Property<lett::window> &lett::Property<lett::window>::style(int style){
+lett::Property<lett::window> &lett::Property<lett::window>::style(lett::style::window style){
     this->m_style = style;
     return *this;
 }
@@ -67,7 +67,7 @@ lett::Rect<lett::size> lett::Property<lett::window>::GetSize() const{
     return this->m_size;
 }
 
-int lett::Property<lett::window>::GetStyle() const{
+lett::style::window lett::Property<lett::window>::GetStyle() const{
     return this->m_style;
 }
 
@@ -101,6 +101,16 @@ lett::Property<lett::view> &lett::Property<lett::view>::size(const lett::Rect<le
     return *this;
 }
 
+lett::Property<lett::view> &lett::Property<lett::view>::style(lett::style::window style){
+    this->m_style = style;
+    return *this;
+}
+
+lett::Property<lett::view> &lett::Property<lett::view>::auto_resize(bool is_bool){
+    this->m_auto_resize = is_bool;
+    return *this;
+}
+
 lett::Property<lett::view> &lett::Property<lett::view>::id(const lett::UniqueId &is_id){
     this->m_id = is_id;
     return *this;
@@ -120,6 +130,14 @@ lett::Rect<lett::point> lett::Property<lett::view>::GetPoint() const{
 
 lett::Rect<lett::size> lett::Property<lett::view>::GetSize() const{
     return this->m_size;
+}
+
+lett::style::window lett::Property<lett::view>::GetStyle() const{
+    return this->m_style;
+}
+
+bool lett::Property<lett::view>::GetAutoResize() const{
+    return this->m_auto_resize;
 }
 
 lett::UniqueId::ulong_t lett::Property<lett::view>::GetId() const{

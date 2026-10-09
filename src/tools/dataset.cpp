@@ -24,6 +24,10 @@ void lett::DataSet::SetId(const lett::UniqueId &is_id){
     this->m_id = is_id;
 }
 
+void lett::DataSet::SetFuncEvent(const lett::EnumId &is_id, lett::FunctionEvent::Func func){
+    this->m_func_event.AddFunc(is_id, func);
+}
+
 bool lett::DataSet::GetMain() const{
     return this->m_is_main;
 }
@@ -48,6 +52,10 @@ lett::Object *lett::DataSet::GetChildrenId(const lett::UniqueId &is_id){
     return this->m_children.GetObject(is_id);
 }
 
-lett::UniqueId::ulong_t lett::DataSet::GetID(){
+lett::UniqueId::ulong_t lett::DataSet::GetID() const{
     return this->m_id.GetId();
+}
+
+lett::FunctionEvent &lett::DataSet::GetFuncEvent(){
+    return this->m_func_event;
 }

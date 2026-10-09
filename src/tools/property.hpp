@@ -64,13 +64,13 @@ public:
 
 class StylePropBase{
 protected:
-    int  m_style  = 0; // ?
+    lett::style::window m_style = lett::style::default_window_style;
     bool m_auto_resize = true;
 public:
     virtual ~StylePropBase() = default;
-    virtual StylePropBase &style(int) = 0;
+    virtual StylePropBase &style(lett::style::window) = 0;
     virtual StylePropBase &auto_resize(bool) = 0;
-    virtual int GetStyle() const = 0;
+    virtual lett::style::window GetStyle() const = 0;
     virtual bool GetAutoResize() const = 0;
 };
 
@@ -79,14 +79,14 @@ class Property <window> final : public AppPropBase, public ParentPropBase, publi
 private:
     lett::UniqueId m_id = lett::UniqueID_NEW;
 public:
-    ~Property() override;
+    ~Property() = default;
     
     Property &app(lett::App*) override;
     Property &parent(lett::Several*) override;
     Property &title(const std::string_view&) override;
     Property &point(const lett::Rect<lett::point>&) override;
     Property &size(const lett::Rect<lett::size>&) override;
-    Property &style(int) override;
+    Property &style(lett::style::window) override;
     Property &auto_resize(bool) override;
     Property &id(const lett::UniqueId&);
     
@@ -95,28 +95,32 @@ public:
     std::string_view GetTitle() const override;
     lett::Rect<lett::point> GetPoint() const override;
     lett::Rect<lett::size> GetSize() const override;
-    int GetStyle() const override;
+    lett::style::window GetStyle() const override;
     bool GetAutoResize() const override;
     lett::UniqueId::ulong_t GetId() const;
 };
 
 template <>
-class Property <view> final : public ParentPropBase, public TitlePropBase, public RectPropBase{
+class Property <view> final : public ParentPropBase, public TitlePropBase, public RectPropBase, public StylePropBase{
 private:
     lett::UniqueId m_id = lett::UniqueID_NEW;
 public:
-    ~Property() override;
+    ~Property() = default;
     
     Property &parent(lett::Several*) override;
     Property &title(const std::string_view&) override;
     Property &point(const lett::Rect<lett::point>&) override;
     Property &size(const lett::Rect<lett::size>&) override;
+    Property &style(lett::style::window) override;
+    Property &auto_resize(bool) override;
     Property &id(const lett::UniqueId&);
     
     lett::Several *GetParent() const override;
     std::string_view GetTitle() const override;
     lett::Rect<lett::point> GetPoint() const override;
     lett::Rect<lett::size> GetSize() const override;
+    lett::style::window GetStyle() const override;
+    bool GetAutoResize() const override;
     lett::UniqueId::ulong_t GetId() const;
 };
 

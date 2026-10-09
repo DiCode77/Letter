@@ -12,17 +12,12 @@
 #include <unique_id.hpp>
 #include <application.hpp>
 #include <app_storage.hpp>
+#include <func_call.hpp>
 
 #include <unordered_map>
 #include <functional>
 
 namespace lett{
-template <typename>
-class Create;
-class window;
-
-template <typename>
-class Property;
 
 class DataSet{
     bool       m_is_main  = false;
@@ -31,6 +26,7 @@ class DataSet{
     DataSet   *m_parent   = nullptr;
     lett::AppStorage m_children;
     lett::UniqueId m_id;
+    lett::FunctionEvent m_func_event;
 public:
     virtual ~DataSet() = default;
     DataSet() = default;
@@ -41,6 +37,7 @@ public:
     void SetParent(DataSet*);
     void SetChildren(const lett::UniqueId&, lett::Object*);
     void SetId(const lett::UniqueId&);
+    void SetFuncEvent(const lett::EnumId&, lett::FunctionEvent::Func);
     
     bool GetMain() const;
     lett::App *GetApp();
@@ -49,7 +46,8 @@ public:
     DataSet *GetParent();
     lett::AppStorage &GetChildrenList();
     lett::Object *GetChildrenId(const lett::UniqueId&);
-    lett::UniqueId::ulong_t GetID();
+    lett::UniqueId::ulong_t GetID() const;
+    lett::FunctionEvent &GetFuncEvent();
 };
 }
 

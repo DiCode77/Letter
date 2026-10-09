@@ -33,18 +33,24 @@ private:
 };
 
 class FunctionEvent{
-    std::unordered_map<size_t, std::function<void(const lett::Event&)>> m_um_func;
 public:
+    using Func = std::function<void(const lett::Event&)>;
+private:
+    std::unordered_map<size_t, Func> m_um_func;
+public:
+    ~FunctionEvent();
     FunctionEvent();
-    FunctionEvent(const EnumId&, std::function<void(const lett::Event&)>);
+    FunctionEvent(const EnumId&, Func);
     
     bool Empty() const;
     size_t GetSize() const;
+    bool IsFunc(const EnumId&) const;
     
-    void AddFunc(const EnumId &t, std::function<void(const lett::Event&)>);
-    bool FuncCall(const EnumId &id, const lett::Event&);
+    void AddFunc(const EnumId&, Func);
+    void FuncCallWithoutChecking(const EnumId&, const lett::Event&);
+    bool FuncCall(const EnumId&, const lett::Event&);
     bool RemoveFunc(const EnumId&);
-    std::function<void(const lett::Event&)> *GetFunc(const EnumId&);
+    Func *GetFunc(const EnumId&);
     
     void ClearAll();
 };

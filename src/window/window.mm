@@ -20,6 +20,10 @@
 
 // The delegation method is triggered when the red navigation button is pressed.
 - (BOOL)windowShouldClose:(NSWindow *)sender{
+    auto &func_obj = self.m_data_set->GetFuncEvent();
+    if (bool is_run = func_obj.FuncCall(lett::event_window::closing, lett::default_event); is_run == true){
+        return false;
+    }
     return true;
 }
 
@@ -49,19 +53,64 @@
 }
 
 // The delegation method is triggered when the yellow navigation button is pressed. #1
-- (void)windowWillMiniaturize:(NSNotification *)notification{}
+- (void)windowWillMiniaturize:(NSNotification *)notification{
+    self.m_data_set->GetFuncEvent().FuncCall(lett::event_window::collapse, lett::default_event);
+    return;
+}
 
 // The delegation method is triggered when the yellow button is pressed and the hiding process is complete. #2
-- (void)windowDidMiniaturize:(NSNotification *)notification{}
+- (void)windowDidMiniaturize:(NSNotification *)notification{
+    self.m_data_set->GetFuncEvent().FuncCall(lett::event_window::collapsed, lett::default_event);
+}
 
 // The delegate method is triggered when the yellow button is clicked and the window is expanded. #3
-- (void)windowDidDeminiaturize:(NSNotification *)notification{}
+- (void)windowDidDeminiaturize:(NSNotification *)notification{
+    self.m_data_set->GetFuncEvent().FuncCall(lett::event_window::expand, lett::default_event);
+}
 
 // The delegation method is triggered when the red button is pressed. #1
-- (void)windowDidResize:(NSNotification *)notification{}
+- (void)windowDidResize:(NSNotification *)notification{
+    NSWindow *window = (__bridge NSWindow*)notification.object;
+    self.m_data_set->GetFuncEvent().FuncCall(lett::event_window::resizing, lett::Event({
+        .m_data_set = self.m_data_set,
+        .m_point = {
+            static_cast<lett::val_t>([window frame].origin.x),
+            static_cast<lett::val_t>([window frame].origin.y)
+        },
+        .m_size = {
+            static_cast<lett::val_t>([window frame].size.width),
+            static_cast<lett::val_t>([window frame].size.height)
+        },
+    }));
+}
 
 // The delegation method is triggered when the red button is pressed. #2
-- (void)windowDidEndLiveResize:(NSNotification *)notification{}
+- (void)windowDidEndLiveResize:(NSNotification *)notification{
+    NSWindow *window = (__bridge NSWindow*)notification.object;
+    self.m_data_set->GetFuncEvent().FuncCall(lett::event_window::resizing, lett::Event({
+        .m_data_set = self.m_data_set,
+        .m_point = {
+            static_cast<lett::val_t>([window frame].origin.x),
+            static_cast<lett::val_t>([window frame].origin.y)
+        },
+        .m_size = {
+            static_cast<lett::val_t>([window frame].size.width),
+            static_cast<lett::val_t>([window frame].size.height)
+        },
+    }));
+    
+    self.m_data_set->GetFuncEvent().FuncCall(lett::event_window::resized, lett::Event({
+        .m_data_set = self.m_data_set,
+        .m_point = {
+            static_cast<lett::val_t>([window frame].origin.x),
+            static_cast<lett::val_t>([window frame].origin.y)
+        },
+        .m_size = {
+            static_cast<lett::val_t>([window frame].size.width),
+            static_cast<lett::val_t>([window frame].size.height)
+        },
+    }));
+}
 
 @end
 
@@ -139,7 +188,19 @@ bool lett::Create<lett::window>::IsCreate(const lett::Property<lett::window> &pr
         this->m_window_bridge = new WindowBridge();
         
         NSWindow *window = [NSWindow alloc];
-        NSRect rect = NSMakeRect(prop.GetSize().GetX(), prop.GetSize().GetY(), prop.GetPoint().GetX(), prop.GetPoint().GetY());
+        NSRect rect = {};
+        
+        if (prop.GetPoint() != lett::default_point){
+            rect.origin = NSMakePoint(prop.GetSize().GetX(), prop.GetPoint().GetY());
+        }else{
+            rect.origin = {}; // ?
+        }
+        
+        if (prop.GetSize() != lett::default_size){
+            rect.size = NSMakeSize(prop.GetSize().GetX(), prop.GetSize().GetY());
+        }else{
+            rect.size = {}; // ?
+        }
         
         [window initWithContentRect:rect styleMask:(NSWindowStyleMask)prop.GetStyle() backing:NSBackingStoreBuffered defer:NO];
         [window setTitle:[NSString stringWithUTF8String:prop.GetTitle().data()]];
@@ -177,4 +238,23 @@ lett::Create<lett::window> *lett::Create<lett::window>::Center(){
 
 void lett::Create<lett::window>::Close(){
     [this->m_window_bridge->GetWindow() close];
+}
+
+lett::Create<lett::window> *lett::Create<lett::window>::Connect(const lett::EnumId &is_id, lett::FunctionEvent::Func func){
+    this->SetFuncEvent(is_id, func);
+    return this;
+}
+
+lett::Create<lett::window> *lett::Create<lett::window>::DisConnect(const lett::EnumId &is_id){
+    this->GetFuncEvent().RemoveFunc(is_id);
+    return this;
+}
+
+lett::Create<lett::window> *lett::Create<lett::window>::RunTheFunction(const lett::EnumId &is_id, const lett::Event &event){
+    this->GetFuncEvent().FuncCall(is_id, event);
+    return this;
+}
+
+bool lett::Create<lett::window>::IsConnect(const lett::EnumId &is_id){
+    return this->GetFuncEvent().IsFunc(is_id);
 }
