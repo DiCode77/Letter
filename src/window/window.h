@@ -21,6 +21,7 @@ public:
     
     void SetWindow(NSWindow*, lett::Object*, lett::DataSet*);
     NSWindow *GetWindow();
+    WindowInterface *GetInterface();
 };
 }
 

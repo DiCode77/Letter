@@ -40,6 +40,8 @@ public:
     void   MinimazeTheWindow() override;
     void   DeminiaturizeTheWindow() override;
     bool   IsMiniaturizedWindow() override;
+    void   ToggleFullScreen() override;
+    bool   IsFullScreen() override;
     void   Zoom() override;
     bool   IsZoom() override;
     
@@ -47,6 +49,12 @@ public:
     Create *DisConnect(const lett::EnumId&) override;
     Create *RunTheFunction(const lett::EnumId&, const lett::Event&) override;
     bool IsConnect(const lett::EnumId&) override;
+    
+    Create *SetPoint(const lett::Rect<lett::point>&) override;
+    Create *SetSize(const lett::Rect<lett::size>&) override;
+    
+    lett::Rect<lett::point> GetPoint() const override;
+    lett::Rect<lett::size> GetSize() const override;
 };
 };
 
