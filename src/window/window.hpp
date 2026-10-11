@@ -37,6 +37,11 @@ public:
     Create *Hide() override;
     Create *Center() override;
     void   Close() override;
+    void   MinimazeTheWindow() override;
+    void   DeminiaturizeTheWindow() override;
+    bool   IsMiniaturizedWindow() override;
+    void   Zoom() override;
+    bool   IsZoom() override;
     
     Create *Connect(const lett::EnumId&, lett::FunctionEvent::Func) override;
     Create *DisConnect(const lett::EnumId&) override;

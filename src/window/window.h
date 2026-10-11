@@ -14,6 +14,7 @@ namespace lett{
 class WindowBridge{
     NSWindow        *m_ns_window;
     WindowInterface *m_interface;
+    ButtonDelegate  *m_button_delegate;
 public:
     ~WindowBridge();
     WindowBridge();

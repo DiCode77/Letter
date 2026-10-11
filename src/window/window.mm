@@ -55,7 +55,6 @@
 // The delegation method is triggered when the yellow navigation button is pressed. #1
 - (void)windowWillMiniaturize:(NSNotification *)notification{
     self.m_data_set->GetFuncEvent().FuncCall(lett::event_window::collapse, lett::default_event);
-    return;
 }
 
 // The delegation method is triggered when the yellow button is pressed and the hiding process is complete. #2
@@ -114,9 +113,79 @@
 
 @end
 
+@implementation ButtonDelegate
+
+- (instancetype)init{
+    self = [super init];
+    
+    if (self){
+        _m_data_set = nil;
+    }
+    
+    return self;
+}
+
+- (void)dealloc{
+    [super dealloc];
+}
+
+- (void)set_um_storage:(NSButton*)button_key : (const StorageTargetAndAction&) stg{
+    _m_um_storage_button.insert(std::make_pair(button_key, stg));
+}
+
+- (void)window_close:(id)sender{
+    if (auto it_storage = _m_um_storage_button.find(static_cast<NSButton*>(sender)); it_storage != _m_um_storage_button.end()){
+        if (const bool is_run = self.m_data_set->GetFuncEvent().FuncCall(lett::event_window::intercept_close, lett::Event({
+            .m_sender = reinterpret_cast<void*>(sender),
+            .m_data_set = self.m_data_set,
+        })); is_run != true){
+            [reinterpret_cast<NSApplication*>(self.m_data_set->GetApp()->GetNSApp()) sendAction:it_storage->second.selector
+                                                                                             to:it_storage->second.target
+                                                                                           from:it_storage->first];
+        }
+    }
+}
+
+- (void)window_minimaze:(id)sender{
+    if (auto it_storage = _m_um_storage_button.find(static_cast<NSButton*>(sender)); it_storage != _m_um_storage_button.end()){
+        if (const bool is_run = self.m_data_set->GetFuncEvent().FuncCall(lett::event_window::intercept_collapse, lett::Event({
+            .m_sender = reinterpret_cast<void*>(sender),
+            .m_data_set = self.m_data_set,
+        })); is_run != true){
+            [reinterpret_cast<NSApplication*>(self.m_data_set->GetApp()->GetNSApp()) sendAction:it_storage->second.selector
+                                                                                             to:it_storage->second.target
+                                                                                           from:it_storage->first];
+        }
+    }
+}
+
+- (void)window_zoom:(id)sender{
+    if (auto it_storage = _m_um_storage_button.find(static_cast<NSButton*>(sender)); it_storage != _m_um_storage_button.end()){
+        if (const bool is_run = self.m_data_set->GetFuncEvent().FuncCall(lett::event_window::intercept_expand, lett::Event({
+            .m_sender = reinterpret_cast<void*>(sender),
+            .m_data_set = self.m_data_set,
+        })); is_run != true){
+            [reinterpret_cast<NSApplication*>(self.m_data_set->GetApp()->GetNSApp()) sendAction:it_storage->second.selector
+                                                                                             to:it_storage->second.target
+                                                                                           from:it_storage->first];
+        }
+    }
+}
+
+
+@end
+
 lett::WindowBridge::~WindowBridge(){
+    if (!this->m_button_delegate.m_um_storage_button.empty()){ // ?
+        std::ranges::for_each(this->m_button_delegate.m_um_storage_button.begin(), this->m_button_delegate.m_um_storage_button.end(), [](const std::pair<NSButton*, StorageTargetAndAction> &pair){
+            [pair.first setAction:pair.second.selector];
+            [pair.first setTarget:pair.second.target];
+        });
+    }
+    
     if (this->m_ns_window != nil){
         [this->m_ns_window setDelegate:nil];
+        
         [this->m_ns_window close];
         [this->m_ns_window release];
         
@@ -127,18 +196,54 @@ lett::WindowBridge::~WindowBridge(){
         [this->m_interface release];
         this->m_interface = nil;
     }
+    
+    if (this->m_button_delegate != nil){
+        this->m_button_delegate.m_um_storage_button.clear(); // ?
+        [this->m_button_delegate release];
+        this->m_button_delegate = nil;
+    }
 }
 
-lett::WindowBridge::WindowBridge() : m_ns_window(nil), m_interface(nil){}
+lett::WindowBridge::WindowBridge() : m_ns_window(nil), m_interface(nil), m_button_delegate(nil){}
 
 void lett::WindowBridge::SetWindow(NSWindow *window, lett::Object *p_obj, lett::DataSet *p_dset){
     if (this->m_ns_window == nil && this->m_interface == nil){
         this->m_ns_window = window;
+        NSLog(@"%i", this->m_ns_window.isReleasedWhenClosed);
+        
+        NSLog(@"%lu", static_cast<unsigned long>(this->m_ns_window.retainCount));
+        [this->m_ns_window setReleasedWhenClosed:NO];
+        NSLog(@"%lu", static_cast<unsigned long>(this->m_ns_window.retainCount));
+        
         this->m_interface = [[WindowInterface alloc] init];
         
         [this->m_interface setM_oem_object:p_obj];
         [this->m_interface setM_data_set:p_dset];
         [this->m_ns_window setDelegate:this->m_interface];
+        
+        this->m_button_delegate = [[ButtonDelegate alloc] init];
+        [this->m_button_delegate setM_data_set:p_dset];
+        
+        NSButton *button = nil;
+
+        // We specify our delegate for the close button.
+        // We specify our delegate for the collapse button.
+        // We specify our delegate for the expand button.
+        for (NSUInteger b_st = NSWindowButton::NSWindowCloseButton; b_st <= NSWindowButton::NSWindowZoomButton; b_st++){
+            button = [window standardWindowButton:(NSWindowButton)b_st];
+            [this->m_button_delegate set_um_storage:button :{
+                [button action], [button target]
+            }];
+            [button setTarget:this->m_button_delegate];
+            [button setAction:@selector(window_close:)];
+        }
+        
+        /*
+         Basically, here's how it works: immediately after creating the window,
+         I delegate its buttons, and then I check whether the corresponding flag with the methods to be referenced has been created; if not, I continue executing the code;
+         if so, I perform the redirection, and in this case, the standard close, minimize, and maximize events can be ignored.
+         */
+        
     }else{
         throw std::runtime_error("One of the objects has already been created!");
     }
@@ -238,6 +343,26 @@ lett::Create<lett::window> *lett::Create<lett::window>::Center(){
 
 void lett::Create<lett::window>::Close(){
     [this->m_window_bridge->GetWindow() close];
+}
+
+void lett::Create<lett::window>::MinimazeTheWindow(){
+    [this->m_window_bridge->GetWindow() miniaturize:nil];
+}
+
+void lett::Create<lett::window>::DeminiaturizeTheWindow(){
+    [this->m_window_bridge->GetWindow() deminiaturize:nil];
+}
+
+bool lett::Create<lett::window>::IsMiniaturizedWindow(){
+    return static_cast<bool>([this->m_window_bridge->GetWindow() isMiniaturized]);
+}
+
+void lett::Create<lett::window>::Zoom(){
+    [this->m_window_bridge->GetWindow() zoom:nil];
+}
+
+bool lett::Create<lett::window>::IsZoom(){
+    return static_cast<bool>([this->m_window_bridge->GetWindow() isZoomed]);
 }
 
 lett::Create<lett::window> *lett::Create<lett::window>::Connect(const lett::EnumId &is_id, lett::FunctionEvent::Func func){
